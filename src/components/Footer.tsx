@@ -48,13 +48,13 @@ const Footer: React.FC = () => {
                 <span>WhatsApp: +94 76 314 8962</span>
               </a>
 
-              <a
+              {/* <a
                 href="mailto:info@consulting.com"
                 className="flex items-center space-x-3 text-sm text-muted-foreground hover:text-primary transition-colors group"
               >
                 <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 <span>info@consulting.com</span>
-              </a>
+              </a> */}
             </div>
           </div>
         </div>
