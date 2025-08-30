@@ -6,7 +6,6 @@ export interface Feedback {
   projectName: string;
   feedback: string;
   rating: number;
-  showNamePublic: boolean;
   createdAt: Date;
 }
 
@@ -17,5 +16,4 @@ export interface CreateFeedbackData {
   projectName: string;
   feedback: string;
   rating: number;
-  showNamePublic: boolean;
 }

@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Star, Loader2 } from "lucide-react";
-import { CreateFeedbackData } from "@/services/feedbackService";
+import { CreateFeedbackData, Feedback } from "@/interfaces/feedback";
 
 interface AddFeedbackModalProps {
   isOpen: boolean;
@@ -30,7 +30,6 @@ interface FormData {
   projectName: string;
   feedback: string;
   rating: number;
-  showNamePublic: boolean;
   honeypot: string; // Anti-spam field
 }
 
@@ -55,7 +54,6 @@ const AddFeedbackModal: React.FC<AddFeedbackModalProps> = ({
     projectName: "",
     feedback: "",
     rating: 0,
-    showNamePublic: true,
     honeypot: "",
   });
 
@@ -116,6 +114,7 @@ const AddFeedbackModal: React.FC<AddFeedbackModalProps> = ({
 
     try {
       const { honeypot, ...submitData } = formData;
+      console.log("Submitting feedback:", submitData);
       const result = await onSubmit(submitData);
 
       if (result.success) {
@@ -127,7 +126,6 @@ const AddFeedbackModal: React.FC<AddFeedbackModalProps> = ({
           projectName: "",
           feedback: "",
           rating: 0,
-          showNamePublic: true,
           honeypot: "",
         });
         setErrors({});
@@ -309,7 +307,7 @@ const AddFeedbackModal: React.FC<AddFeedbackModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <Checkbox
               id="showNamePublic"
               checked={formData.showNamePublic}
@@ -320,7 +318,7 @@ const AddFeedbackModal: React.FC<AddFeedbackModalProps> = ({
             <Label htmlFor="showNamePublic" className="text-sm">
               Show my name publicly (uncheck to appear as "Anonymous")
             </Label>
-          </div>
+          </div> */}
 
           <div className="flex justify-end space-x-3 pt-4">
             <Button

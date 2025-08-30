@@ -27,8 +27,11 @@ export default function Home() {
   //! Get Feedbacks
   useEffect(() => {
     // Load feedbacks on mount (client-side only)
-    const loadedFeedbacks = feedbackService.getFeedbacks();
-    setFeedbacks(loadedFeedbacks);
+    const fetchFeedbacks = async () => {
+      const loadedFeedbacks = await feedbackService.getFeedbacks();
+      setFeedbacks(loadedFeedbacks);
+    };
+    fetchFeedbacks();
 
     // Restore dark mode
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
@@ -41,7 +44,7 @@ export default function Home() {
     const result = await feedbackService.addFeedback(data);
 
     if (result.success) {
-      setFeedbacks(feedbackService.getFeedbacks()); // refresh
+      setFeedbacks(await feedbackService.getFeedbacks()); // refresh
       setShowConfetti(true);
       toast({
         title: "Thank you!",

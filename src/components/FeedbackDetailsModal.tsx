@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Star, User, Calendar, Mail, Phone } from "lucide-react";
-import { Feedback } from "@/services/feedbackService";
+import { Feedback } from "@/interfaces/feedback";
 
 interface FeedbackDetailsModalProps {
   feedback: Feedback | null;
@@ -23,7 +23,7 @@ const FeedbackDetailsModal: React.FC<FeedbackDetailsModalProps> = ({
 }) => {
   if (!feedback) return null;
 
-  const displayName = feedback.showNamePublic ? feedback.name : "Anonymous";
+  const displayName = feedback.name;
   const maskedEmail = feedback.email.replace(/(.{2})(.*)(@.*)/, "$1***$3");
   const maskedPhone = feedback.mobile.replace(/(.{6})(.*)(.{4})/, "$1***$3");
 
@@ -38,15 +38,21 @@ const FeedbackDetailsModal: React.FC<FeedbackDetailsModalProps> = ({
     ));
   };
 
-  const formatDate = (date: Date) => {
+  // utils/formatDate.ts
+  function formatDate(
+    input: string | Date,
+    tz: string = "Asia/Colombo"
+  ): string {
+    const d = typeof input === "string" ? new Date(input) : input;
+    if (!(d instanceof Date) || isNaN(d.getTime())) return "—";
+
     return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  };
+      dateStyle: "long", // "Aug 30, 2025" -> use "medium" if you prefer shorter
+      timeStyle: "short", // "2:37 PM"
+      timeZone: tz,
+      hour12: true,
+    }).format(d);
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -62,11 +68,8 @@ const FeedbackDetailsModal: React.FC<FeedbackDetailsModalProps> = ({
           <div className="flex items-start space-x-4 p-4 bg-gradient-card rounded-lg">
             <div className="flex-shrink-0">
               <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold text-xl">
-                {feedback.showNamePublic ? (
-                  feedback.name.charAt(0).toUpperCase()
-                ) : (
-                  <User className="w-8 h-8" />
-                )}
+                {feedback.name.charAt(0).toUpperCase()}
+                <User className="w-8 h-8" />
               </div>
             </div>
 
@@ -123,7 +126,9 @@ const FeedbackDetailsModal: React.FC<FeedbackDetailsModalProps> = ({
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <span className="font-medium">Submitted:</span>
               <span className="text-muted-foreground">
-                {formatDate(feedback.createdAt)}
+                {feedback.createdAt
+                  ? formatDate(feedback.createdAt)
+                  : "Unknown"}
               </span>
             </div>
           </div>

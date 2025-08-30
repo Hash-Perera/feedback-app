@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Star, User } from "lucide-react";
-import { Feedback } from "@/services/feedbackService";
+import { Feedback } from "@/interfaces/feedback";
 
 interface FeedbackCardProps {
   feedback: Feedback;
@@ -10,7 +10,7 @@ interface FeedbackCardProps {
 }
 
 const FeedbackCard: React.FC<FeedbackCardProps> = ({ feedback, onClick }) => {
-  const displayName = feedback.showNamePublic ? feedback.name : "Anonymous";
+  const displayName = feedback.name;
   const truncatedFeedback =
     feedback.feedback.length > 150
       ? feedback.feedback.substring(0, 150) + "..."
@@ -35,11 +35,8 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ feedback, onClick }) => {
       <div className="flex items-start space-x-4">
         <div className="flex-shrink-0">
           <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-white font-semibold">
-            {feedback.showNamePublic ? (
-              feedback.name.charAt(0).toUpperCase()
-            ) : (
-              <User className="w-6 h-6" />
-            )}
+            {feedback.name.charAt(0).toUpperCase()}
+            <User className="w-6 h-6" />
           </div>
         </div>
 
