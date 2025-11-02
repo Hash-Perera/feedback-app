@@ -15,7 +15,7 @@ const features = [
     description:
       "PhD-qualified professionals with extensive experience in academic writing across all disciplines.",
     stat: "50+",
-    statLabel: "PhD Experts",
+    statLabel: "BSc/MSc Experts",
   },
   {
     icon: Clock,
@@ -48,14 +48,6 @@ const features = [
       "Rigorous quality checks and unlimited revisions to ensure your complete satisfaction.",
     stat: "4.9/5",
     statLabel: "Rating",
-  },
-  {
-    icon: Sparkles,
-    title: "Confidential & Secure",
-    description:
-      "Your privacy is our priority. All transactions and communications are fully encrypted.",
-    stat: "256-bit",
-    statLabel: "Encryption",
   },
 ];
 
