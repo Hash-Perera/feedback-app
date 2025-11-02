@@ -1,10 +1,20 @@
 "use client";
 
 import React from "react";
-import { MessageCircle, Mail, Heart } from "lucide-react";
+import { MessageCircle, Mail, Heart, MessageSquarePlus } from "lucide-react";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  onAddProjectClick: () => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onAddProjectClick }) => {
   const currentYear = new Date().getFullYear();
+
+  // const onAddProjectClick = () => {
+  //   // window.location.href = "/projects";
+  // };
 
   return (
     <footer className="bg-gradient-card border-t py-12 px-4">
@@ -20,6 +30,14 @@ const Footer: React.FC = () => {
               help, Web & Mobile app development, and IT, Business & Engineering
               assignments.
             </p>
+            <Button
+              onClick={onAddProjectClick}
+              className="bg-gradient-primary text-white font-medium shadow-soft hover:shadow-card transition-all duration-300 hover:scale-105 text-xs cursor-pointer"
+              size="sm"
+            >
+              + Project
+            </Button>
+            {/* <Link href="/projects/add">Projects</Link> */}
           </div>
 
           {/* Quick Links */}
@@ -39,7 +57,7 @@ const Footer: React.FC = () => {
             <h4 className="font-semibold">Get in Touch</h4>
             <div className="space-y-3">
               <a
-                href="https://wa.me/94771234567"
+                href="https://wa.me/94763148962"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 text-sm text-muted-foreground hover:text-primary transition-colors group"
@@ -47,14 +65,6 @@ const Footer: React.FC = () => {
                 <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 <span>WhatsApp: +94 76 314 8962</span>
               </a>
-
-              {/* <a
-                href="mailto:info@consulting.com"
-                className="flex items-center space-x-3 text-sm text-muted-foreground hover:text-primary transition-colors group"
-              >
-                <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>info@consulting.com</span>
-              </a> */}
             </div>
           </div>
         </div>

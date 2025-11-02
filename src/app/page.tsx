@@ -12,6 +12,10 @@ import Footer from "@/components/Footer";
 import Confetti from "@/components/Confetti";
 import { feedbackService } from "@/services/feedbackService";
 import { CreateFeedbackData, Feedback } from "@/interfaces/feedback";
+import AuthDialog from "@/components/LoginModel";
+import Services from "@/components/Services";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import HowItWorks from "@/components/HowItWorks";
 
 export default function Home() {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -20,6 +24,7 @@ export default function Home() {
   );
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const { toast } = useToast();
@@ -64,6 +69,18 @@ export default function Home() {
     return result;
   };
 
+  const handleAuthenticate = async (
+    username: string,
+    password: string
+  ): Promise<void> => {
+    setIsAuthDialogOpen(false);
+    toast({
+      title: "Successfully Authenticated",
+      description: "You can now submit feedback.",
+      duration: 5000,
+    });
+  };
+
   const handleToggleDarkMode = () => {
     const newDarkMode = !isDarkMode;
     setIsDarkMode(newDarkMode);
@@ -87,10 +104,13 @@ export default function Home() {
 
       <main>
         <Hero />
+        <Services />
+        <WhyChooseUs />
+        <HowItWorks />
         <FeedbackLoop feedbacks={feedbacks} onCardClick={handleCardClick} />
       </main>
 
-      <Footer />
+      <Footer onAddProjectClick={() => setIsAuthDialogOpen(true)} />
 
       {/* Modals */}
       <FeedbackDetailsModal
@@ -106,6 +126,12 @@ export default function Home() {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSubmit={handleAddFeedback}
+      />
+
+      <AuthDialog
+        isOpen={isAuthDialogOpen}
+        onClose={() => setIsAuthDialogOpen(false)}
+        // onAuthenticate={handleAuthenticate}
       />
 
       {/* Confetti Effect */}
