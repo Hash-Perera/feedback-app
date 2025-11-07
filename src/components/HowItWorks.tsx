@@ -162,7 +162,7 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section id="how-it-works" className="py-24 px-4 relative overflow-hidden">
       <div className="container mx-auto max-w-6xl relative">
         {/* Header */}
         <div className="text-center mb-16">

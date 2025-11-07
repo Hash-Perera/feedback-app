@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -16,6 +15,7 @@ import AuthDialog from "@/components/LoginModel";
 import Services from "@/components/Services";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import HowItWorks from "@/components/HowItWorks";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function Home() {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -31,14 +31,12 @@ export default function Home() {
 
   //! Get Feedbacks
   useEffect(() => {
-    // Load feedbacks on mount (client-side only)
     const fetchFeedbacks = async () => {
       const loadedFeedbacks = await feedbackService.getFeedbacks();
       setFeedbacks(loadedFeedbacks);
     };
     fetchFeedbacks();
 
-    // Restore dark mode
     const savedDarkMode = localStorage.getItem("darkMode") === "true";
     setIsDarkMode(savedDarkMode);
     if (savedDarkMode) document.documentElement.classList.add("dark");
@@ -49,7 +47,7 @@ export default function Home() {
     const result = await feedbackService.addFeedback(data);
 
     if (result.success) {
-      setFeedbacks(await feedbackService.getFeedbacks()); // refresh
+      setFeedbacks(await feedbackService.getFeedbacks());
       setShowConfetti(true);
       toast({
         title: "Thank you!",
@@ -69,18 +67,6 @@ export default function Home() {
     return result;
   };
 
-  const handleAuthenticate = async (
-    username: string,
-    password: string
-  ): Promise<void> => {
-    setIsAuthDialogOpen(false);
-    toast({
-      title: "Successfully Authenticated",
-      description: "You can now submit feedback.",
-      duration: 5000,
-    });
-  };
-
   const handleToggleDarkMode = () => {
     const newDarkMode = !isDarkMode;
     setIsDarkMode(newDarkMode);
@@ -95,12 +81,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header
-        onAddFeedbackClick={() => setIsAddModalOpen(true)}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={handleToggleDarkMode}
-      />
+    <div className="min-h-screen bg-background relative">
+      <Header isDarkMode={isDarkMode} onToggleDarkMode={handleToggleDarkMode} />
 
       <main>
         <Hero />
@@ -110,7 +92,10 @@ export default function Home() {
         <FeedbackLoop feedbacks={feedbacks} onCardClick={handleCardClick} />
       </main>
 
-      <Footer onAddProjectClick={() => setIsAuthDialogOpen(true)} />
+      <Footer />
+
+      {/* WhatsApp Floating Button */}
+      <WhatsAppButton phoneNumber="94763148962" isDarkMode={isDarkMode} />
 
       {/* Modals */}
       <FeedbackDetailsModal
@@ -128,13 +113,6 @@ export default function Home() {
         onSubmit={handleAddFeedback}
       />
 
-      <AuthDialog
-        isOpen={isAuthDialogOpen}
-        onClose={() => setIsAuthDialogOpen(false)}
-        // onAuthenticate={handleAuthenticate}
-      />
-
-      {/* Confetti Effect */}
       <Confetti
         trigger={showConfetti}
         onComplete={() => setShowConfetti(false)}

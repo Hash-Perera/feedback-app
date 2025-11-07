@@ -1,6 +1,24 @@
 /* Tailwind v4 core (preflight + utilities) */
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(37, 211, 102, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(37, 211, 102, 0.75);
+  }
+}
+
+.glow-animate {
+  animation: pulseGlow 2.8s infinite ease-in-out;
+}
+
+
 /* ---------- Design tokens (HSL) ---------- */
 /* Light theme */
 :root {
