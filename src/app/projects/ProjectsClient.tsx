@@ -106,11 +106,7 @@ const ProjectsClient: React.FC = () => {
       } min-h-screen transition-colors duration-500`}
     >
       {/* ✅ Modern Header */}
-      <Header
-        onAddFeedbackClick={handleAddFeedbackClick}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={handleToggleDarkMode}
-      />
+      <Header isDarkMode={isDarkMode} onToggleDarkMode={handleToggleDarkMode} />
 
       {/* JSON-LD */}
       <Script
