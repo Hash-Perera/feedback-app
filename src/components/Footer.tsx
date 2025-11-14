@@ -1,83 +1,43 @@
 "use client";
 
 import React from "react";
-import { MessageCircle, Mail, Heart, MessageSquarePlus } from "lucide-react";
-import { Button } from "./ui/button";
-import Link from "next/link";
+import { Heart } from "lucide-react";
 
-interface FooterProps {
-  onAddProjectClick: () => void;
-}
-
-const Footer: React.FC<FooterProps> = ({ onAddProjectClick }) => {
+const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
-  // const onAddProjectClick = () => {
-  //   // window.location.href = "/projects";
-  // };
-
   return (
-    <footer className="bg-gradient-card border-t py-12 px-4">
-      <div className="container mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">
-              AssignmentBuddy
-            </h3>
-            <p className="text-muted-foreground leading-relaxed">
-              Empowering your studies with expert academic writing, research
-              help, Web & Mobile app development, and IT, Business & Engineering
-              assignments.
-            </p>
-            <Button
-              onClick={onAddProjectClick}
-              className="bg-gradient-primary text-white font-medium shadow-soft hover:shadow-card transition-all duration-300 hover:scale-105 text-xs cursor-pointer"
-              size="sm"
-            >
-              + Project
-            </Button>
-            {/* <Link href="/projects/add">Projects</Link> */}
-          </div>
+    <footer
+      className={`relative mt-24 border-t backdrop-blur-xl  border-white/10 transition-all duration-500`}
+    >
+      <div className="container mx-auto px-6 py-12 flex flex-col items-center text-center space-y-6">
+        {/* Brand */}
+        <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent select-none">
+          AssignmentBuddy
+        </h3>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h4 className="font-semibold">Our Services</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• Academic Writing</li>
-              <li>• Research Assistance</li>
-              <li>• Data Analysis</li>
-              <li>• Business Consulting</li>
-              <li>• Editing & Proofreading</li>
-            </ul>
-          </div>
+        {/* Tagline */}
+        <p
+          className={`max-w-xl text-sm md:text-base leading-relaxed transition-colors duration-300 
+  text-black dark:text-gray-400`}
+        >
+          Empowering your academic and professional success through innovation,
+          creativity, and technology.
+        </p>
 
-          {/* Contact */}
-          <div className="space-y-4">
-            <h4 className="font-semibold">Get in Touch</h4>
-            <div className="space-y-3">
-              <a
-                href="https://wa.me/94763148962"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center space-x-3 text-sm text-muted-foreground hover:text-primary transition-colors group"
-              >
-                <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>WhatsApp: +94 76 314 8962</span>
-              </a>
-            </div>
-          </div>
-        </div>
+        {/* Divider Line */}
+        <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-purple-400/60 to-transparent my-3" />
 
-        {/* Bottom Bar */}
-        <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-sm text-muted-foreground">
-            © {currentYear} AssignmentBuddy. All rights reserved.
-          </p>
-
-          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+        {/* Bottom Text */}
+        <div
+          className={`flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-3 text-sm transition-colors duration-300 
+          text-gray-600 dark:text-gray-400`}
+        >
+          <p>© {currentYear} AssignmentBuddy. All rights reserved.</p>
+          <span className="hidden sm:block">•</span>
+          <div className="flex items-center space-x-1">
             <span>Made with</span>
-            <Heart className="w-4 h-4 text-red-500 fill-current" />
+            <Heart className="w-6 h-6 text-red-500 fill-current animate-pulse" />
             <span>for academic excellence</span>
           </div>
         </div>

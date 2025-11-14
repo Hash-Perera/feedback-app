@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import Script from "next/script";
-
+import Header from "@/components/Header"; // ✅ make sure this path points to your header file
 import {
   Card,
   CardContent,
@@ -74,6 +74,7 @@ const sampleProjects: ProjectItem[] = [
 
 const ProjectsClient: React.FC = () => {
   const [active, setActive] = useState<ProjectItem | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const structuredData = useMemo(
     () => ({
@@ -89,9 +90,25 @@ const ProjectsClient: React.FC = () => {
     []
   );
 
+  const handleAddFeedbackClick = () => {
+    alert("Feedback form coming soon! 🚀");
+  };
+
+  const handleToggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+    document.documentElement.classList.toggle("dark");
+  };
+
   return (
-    <main className="container mx-auto px-4 py-12">
-      {/* JSON-LD (replaces Helmet script) */}
+    <div
+      className={`${
+        isDarkMode ? "dark bg-[#0b0b0b]" : "bg-white"
+      } min-h-screen transition-colors duration-500`}
+    >
+      {/* ✅ Modern Header */}
+      <Header isDarkMode={isDarkMode} onToggleDarkMode={handleToggleDarkMode} />
+
+      {/* JSON-LD */}
       <Script
         id="ld-projects"
         type="application/ld+json"
@@ -100,128 +117,172 @@ const ProjectsClient: React.FC = () => {
         {JSON.stringify(structuredData)}
       </Script>
 
-      <nav className="mb-6 flex items-center justify-between">
-        <Link
-          href="/"
-          className="text-sm text-muted-foreground hover:text-primary transition-colors"
-        >
-          ← Back to Home
-        </Link>
-      </nav>
+      {/* Main Content */}
+      <main className="container mx-auto px-4 pt-28 pb-20">
+        <header className="mb-12 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            Projects Showcase
+          </h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-3 text-base">
+            Explore our featured projects — from data-driven insights to elegant
+            web solutions.
+          </p>
+        </header>
 
-      <header className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">
-          Projects Showcase
-        </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          Browse selected work delivered across research, analysis, and web.
-        </p>
-      </header>
-
-      <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sampleProjects.map((p) => (
-          <article key={p.id} id={p.id}>
-            <Card
-              className="hover-scale cursor-pointer"
-              onClick={() => setActive(p)}
-            >
-              <CardHeader>
-                <CardTitle className="text-xl">{p.title}</CardTitle>
-                <CardDescription className="line-clamp-2">
-                  {p.summary}
-                </CardDescription>
-                <div className="mt-1 text-xs text-primary">See more</div>
-              </CardHeader>
-              <CardContent>
-                <div className="aspect-video rounded-md overflow-hidden bg-muted">
-                  {/* You can switch to next/image if you want optimization */}
-                  <img
-                    src={p.thumbnail}
-                    alt={`${p.title} thumbnail`}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {p.tags.map((t) => (
-                    <Badge key={t}>{t}</Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </article>
-        ))}
-      </section>
-
-      <Dialog open={!!active} onOpenChange={() => setActive(null)}>
-        <DialogContent className="sm:max-w-5xl max-w-[95vw]">
-          {active && (
-            <>
-              <DialogHeader>
-                <DialogTitle>{active.title}</DialogTitle>
-                <DialogDescription>{active.summary}</DialogDescription>
-              </DialogHeader>
-
-              <section className="grid md:grid-cols-5 gap-6">
-                <div className="md:col-span-3 space-y-4">
-                  <Carousel className="w-full">
-                    <CarouselContent>
-                      {active.media.map((m, idx) => (
-                        <CarouselItem key={idx}>
-                          <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                            {m.type === "image" ? (
-                              <img
-                                src={m.src}
-                                alt={
-                                  m.alt || `${active.title} media ${idx + 1}`
-                                }
-                                loading="lazy"
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <video
-                                controls
-                                className="w-full h-full"
-                                aria-label={
-                                  m.alt || `${active.title} video ${idx + 1}`
-                                }
-                              >
-                                <source src={m.src} />
-                              </video>
-                            )}
-                          </div>
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                  </Carousel>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <ImageIcon className="w-4 h-4" /> Supports images
-                    <Video className="w-4 h-4" /> Supports videos via URL
+        {/* Project Grid */}
+        <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {sampleProjects.map((p) => (
+            <article key={p.id} id={p.id}>
+              <Card
+                className={`cursor-pointer overflow-hidden rounded-2xl border ${
+                  isDarkMode
+                    ? "border-white/10 bg-white/5 text-white hover:bg-white/10"
+                    : "border-gray-200 bg-white hover:bg-gray-50"
+                } shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300`}
+                onClick={() => setActive(p)}
+              >
+                <CardHeader>
+                  <CardTitle className="text-xl font-semibold">
+                    {p.title}
+                  </CardTitle>
+                  <CardDescription className="line-clamp-2">
+                    {p.summary}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="aspect-video rounded-md overflow-hidden bg-gray-100">
+                    <img
+                      src={p.thumbnail}
+                      alt={`${p.title} thumbnail`}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    />
                   </div>
-                </div>
-
-                <div className="md:col-span-2 space-y-4">
-                  <h2 className="text-lg font-semibold">Project Details</h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {active.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {active.tags.map((t) => (
-                      <Badge key={t}>{t}</Badge>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {p.tags.map((t) => (
+                      <Badge
+                        key={t}
+                        className="bg-blue-100 text-blue-700 border border-blue-200 font-medium"
+                      >
+                        {t}
+                      </Badge>
                     ))}
                   </div>
-                  <Button onClick={() => setActive(null)} className="mt-2">
-                    Close
-                  </Button>
-                </div>
-              </section>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-    </main>
+                </CardContent>
+              </Card>
+            </article>
+          ))}
+        </section>
+
+        {/* Dialog / Modal */}
+        <Dialog open={!!active} onOpenChange={() => setActive(null)}>
+          <DialogContent
+            className={`sm:max-w-5xl max-w-[95vw] rounded-3xl border ${
+              isDarkMode
+                ? "border-white/10 bg-white/10 backdrop-blur-2xl text-white shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+                : "border-gray-200 bg-white shadow-xl"
+            }`}
+          >
+            {active && (
+              <>
+                <DialogHeader>
+                  <DialogTitle
+                    className={`text-2xl font-bold ${
+                      isDarkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    {active.title}
+                  </DialogTitle>
+                  <DialogDescription
+                    className={isDarkMode ? "text-gray-300" : "text-gray-600"}
+                  >
+                    {active.summary}
+                  </DialogDescription>
+                </DialogHeader>
+
+                <section className="grid md:grid-cols-5 gap-8 mt-4">
+                  <div className="md:col-span-3 space-y-4">
+                    <Carousel className="w-full">
+                      <CarouselContent>
+                        {active.media.map((m, idx) => (
+                          <CarouselItem key={idx}>
+                            <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 dark:bg-white/10">
+                              {m.type === "image" ? (
+                                <img
+                                  src={m.src}
+                                  alt={
+                                    m.alt || `${active.title} media ${idx + 1}`
+                                  }
+                                  loading="lazy"
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <video
+                                  controls
+                                  className="w-full h-full rounded-xl"
+                                  aria-label={
+                                    m.alt || `${active.title} video ${idx + 1}`
+                                  }
+                                >
+                                  <source src={m.src} />
+                                </video>
+                              )}
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                    <div
+                      className={`flex items-center gap-2 text-sm ${
+                        isDarkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      <ImageIcon className="w-4 h-4" /> Images{" "}
+                      <Video className="w-4 h-4" /> Videos
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 space-y-4">
+                    <h2
+                      className={`text-lg font-semibold ${
+                        isDarkMode ? "text-blue-400" : "text-blue-600"
+                      }`}
+                    >
+                      Project Details
+                    </h2>
+                    <p
+                      className={`text-sm leading-relaxed ${
+                        isDarkMode ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      {active.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {active.tags.map((t) => (
+                        <Badge
+                          key={t}
+                          className="bg-blue-100 text-blue-700 border border-blue-200 font-medium"
+                        >
+                          {t}
+                        </Badge>
+                      ))}
+                    </div>
+                    <Button
+                      onClick={() => setActive(null)}
+                      className="mt-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white hover:opacity-90"
+                    >
+                      Close
+                    </Button>
+                  </div>
+                </section>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
+      </main>
+    </div>
   );
 };
 
