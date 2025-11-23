@@ -109,7 +109,7 @@ const FeedbackLoop: React.FC<FeedbackLoopProps> = ({
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-24 items-center px-0 md:px-36">
           {/* --- AVATAR SECTION --- */}
           <div
-            className={`relative w-full max-w-[300px] mx-auto my-10 flex-shrink-0 ${
+            className={`relative w-full max-w-[300px] mx-auto mt-10 flex-shrink-0 ${
               isMobile ? "h-[160px]" : "h-[500px]"
             }`}
           >
