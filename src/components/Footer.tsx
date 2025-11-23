@@ -18,8 +18,8 @@ const Footer: React.FC = () => {
 
         {/* Tagline */}
         <p
-          className={`max-w-xl text-sm md:text-base leading-relaxed transition-colors duration-300 
-  text-black dark:text-gray-400`}
+          className={`max-w-xl text-sm md:text-base leading-relaxed transition-colors duration-300  text-gray-600
+   dark:text-gray-400`}
         >
           Empowering your academic and professional success through innovation,
           creativity, and technology.
