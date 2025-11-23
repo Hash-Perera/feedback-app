@@ -10,6 +10,7 @@ import {
   Brain,
   Laptop2,
 } from "lucide-react";
+import LogoLoopContainer from "./LogoLoopContainer";
 
 const services = [
   {
@@ -65,8 +66,8 @@ const services = [
 const Services: React.FC = () => {
   return (
     <section
-      className="relative flex items-center justify-center min-h-screen px-6 py-10 overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background"
       id="services"
+      className=" relative flex items-center justify-center min-h-screen px-6 py-20 overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background"
     >
       {/* Subtle moving gradient blobs */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] bg-primary/10 rounded-full blur-3xl animate-pulse opacity-40" />
@@ -80,7 +81,7 @@ const Services: React.FC = () => {
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-primary bg-clip-text text-transparent ">
             Our Services
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">

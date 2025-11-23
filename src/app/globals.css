@@ -31,6 +31,13 @@ html {
   animation: pulseGlowBlue 2.8s infinite ease-in-out;
 }
 
+:root {
+  --loop-fade: #ffffff; /* light mode fade */
+}
+
+.dark {
+  --loop-fade: transparent; /* no fade in dark mode */
+}
 
 
 /* ---------- Design tokens (HSL) ---------- */

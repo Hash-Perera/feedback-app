@@ -5,7 +5,6 @@ import {
   Shield,
   HeadphonesIcon,
   Award,
-  Sparkles,
 } from "lucide-react";
 
 const features = [
@@ -53,15 +52,15 @@ const features = [
 
 const WhyChooseUs: React.FC = () => {
   return (
-    <section className="py-20 px-4 relative overflow-hidden">
+    <section className="py-10 px-4 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-secondary/10 via-transparent to-primary/10 pointer-events-none" />
+      {/* <div className="absolute inset-0 bg-gradient-to-tr from-secondary/10 via-transparent to-primary/10 pointer-events-none" /> */}
       <div className="absolute top-20 right-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-20 left-20 w-96 h-96 bg-secondary/20 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container mx-auto max-w-7xl relative">
         <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold  mb-2 py-2 bg-gradient-primary bg-clip-text text-transparent">
             Why Choose Us
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

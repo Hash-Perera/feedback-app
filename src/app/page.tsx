@@ -16,6 +16,7 @@ import Services from "@/components/Services";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import HowItWorks from "@/components/HowItWorks";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import LogoLoopContainer from "@/components/LogoLoopContainer";
 
 export default function Home() {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -144,6 +145,7 @@ export default function Home() {
       <main>
         <Hero />
         <Services />
+        <LogoLoopContainer />
         <WhyChooseUs />
         <HowItWorks />
         <FeedbackLoop feedbacks={defaultFeedbacks} />
