@@ -19,6 +19,63 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function Home() {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const defaultFeedbacks: Feedback[] = [
+    {
+      id: "1",
+      name: "Lauren Contreras",
+      mobile: "555-123-4567",
+      email: "lauren.contreras@example.com",
+      projectName: "Project Alpha",
+      feedback:
+        "The UI is intuitive and the team was very responsive. A fantastic experience.",
+      rating: 4.8,
+      createdAt: new Date("2017-08-27"),
+    },
+    {
+      id: "2",
+      name: "Edward Alexander",
+      mobile: "555-987-6543",
+      email: "edward.alexander@example.com",
+      projectName: "E-Commerce Suite",
+      feedback:
+        "They have awesome customer service. I wouldn't recommend going to anyone else. Definitely love the way the workflow works.",
+      rating: 5,
+      createdAt: new Date("2017-08-27"),
+    },
+    {
+      id: "3",
+      name: "Diana Johnston",
+      mobile: "555-555-1212",
+      email: "diana.johnston@example.com",
+      projectName: "Mobile App Redesign",
+      feedback:
+        "Great experience overall. Highly recommended for complex projects.",
+      rating: 4.7,
+      createdAt: new Date("2017-08-27"),
+    },
+    {
+      id: "4",
+      name: "Michael Chen",
+      mobile: "555-444-0000",
+      email: "michael.chen@example.com",
+      projectName: "Automation Tools",
+      feedback:
+        "Professional and dedicated team. They delivered beyond expectations.",
+      rating: 4.9,
+      createdAt: new Date("2017-08-27"),
+    },
+    {
+      id: "5",
+      name: "Sarah Smith",
+      mobile: "555-222-3333",
+      email: "sarah.smith@example.com",
+      projectName: "Workflow Optimization",
+      feedback: "Absolutely loved the workflow. It saved us so much time.",
+      rating: 4.6,
+      createdAt: new Date("2017-08-27"),
+    },
+  ];
+
   const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(
     null
   );
@@ -89,7 +146,7 @@ export default function Home() {
         <Services />
         <WhyChooseUs />
         <HowItWorks />
-        <FeedbackLoop feedbacks={feedbacks} onCardClick={handleCardClick} />
+        <FeedbackLoop feedbacks={defaultFeedbacks} />
       </main>
 
       <Footer />

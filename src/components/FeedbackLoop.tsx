@@ -1,161 +1,310 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Star } from "lucide-react";
 import { Feedback } from "@/interfaces/feedback";
-import FeedbackCard from "./FeedbackCard";
 
 interface FeedbackLoopProps {
-  feedbacks: Feedback[];
-  onCardClick: (feedback: Feedback) => void;
+  feedbacks?: Feedback[];
+  autoRotateInterval?: number;
 }
 
 const FeedbackLoop: React.FC<FeedbackLoopProps> = ({
-  feedbacks,
-  onCardClick,
+  feedbacks = [],
+  autoRotateInterval = 4000,
 }) => {
-  const [pausedRows, setPausedRows] = useState<Set<number>>(new Set());
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [duplicatedFeedbacks, setDuplicatedFeedbacks] = useState<Feedback[]>(
-    []
-  );
-  const rowRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-  const speeds = useRef<number[]>([0.8, 1.0, 1.2]);
+  const [activeIndex, setActiveIndex] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Configuration
-  const ANIMATION_SPEED = 80; // seconds for one complete loop (slower)
-  const CARD_WIDTH = 320; // 80 (w-80) * 4 (rem to px)
-  const GAP = 24; // 6 (gap-6) * 4 (rem to px)
+  const total = feedbacks.length;
 
   useEffect(() => {
-    // Duplicate feedbacks to create seamless infinite loop
-    if (feedbacks.length > 0) {
-      // Create enough duplicates to ensure smooth infinite scroll
-      const totalWidth = (CARD_WIDTH + GAP) * feedbacks.length;
-      const viewportWidth = window.innerWidth;
-      const duplicatesNeeded = Math.ceil((viewportWidth * 2) / totalWidth) + 2;
-
-      const duplicated: Feedback[] = [];
-      for (let i = 0; i < duplicatesNeeded; i++) {
-        duplicated.push(
-          ...feedbacks.map((f) => ({ ...f, id: `${f.id}-${i}` }))
-        );
-      }
-      setDuplicatedFeedbacks(duplicated);
-    }
-  }, [feedbacks]);
-
-  useEffect(() => {
-    // RAF-based auto-scroll per row for smooth, controllable animation
-    let rafId: number;
-
-    const animate = () => {
-      [0, 1, 2].forEach((rowIndex) => {
-        const el = rowRefs.current.get(rowIndex);
-        if (!el || pausedRows.has(rowIndex)) return;
-        const halfWidth = el.scrollWidth / 2;
-        el.scrollLeft += speeds.current[rowIndex % speeds.current.length];
-        if (el.scrollLeft >= halfWidth) {
-          // seamless loop without blink
-          el.scrollLeft -= halfWidth;
-        }
-      });
-      rafId = requestAnimationFrame(animate);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
     };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, [pausedRows, duplicatedFeedbacks]);
-
-  const handleMouseEnter = (rowIndex: number) => {
-    setPausedRows((prev) => new Set(prev).add(rowIndex));
+  const cyclePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + total) % total);
   };
 
-  const handleMouseLeave = (rowIndex: number) => {
-    setPausedRows((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(rowIndex);
-      return newSet;
-    });
-  };
-
-  const handleTouchStart = (rowIndex: number) => {
-    setPausedRows((prev) => new Set(prev).add(rowIndex));
-  };
-
-  const handleTouchEnd = (rowIndex: number) => {
-    setPausedRows((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(rowIndex);
-      return newSet;
-    });
-  };
-
-  if (feedbacks.length === 0) {
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
     return (
-      <section id="feedbacks" className="py-16 px-4">
-        <div className="container mx-auto text-center">
-          <div className="bg-gradient-card rounded-xl p-12 shadow-soft">
-            <h3 className="text-2xl font-semibold mb-4">No feedback yet</h3>
-            <p className="text-muted-foreground">
-              Be the first to share your experience with our services!
-            </p>
-          </div>
-        </div>
-      </section>
+      parts[0].charAt(0).toUpperCase() +
+      parts[parts.length - 1].charAt(0).toUpperCase()
     );
-  }
-
-  // Split feedbacks into 3 rows
-  const getRowFeedbacks = (rowIndex: number) => {
-    const rowFeedbacks = duplicatedFeedbacks.filter(
-      (_, index) => index % 3 === rowIndex
-    );
-    return rowFeedbacks;
   };
+
+  useEffect(() => {
+    timerRef.current = setInterval(cyclePrev, autoRotateInterval);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [total, autoRotateInterval]);
+
+  const handleManualClick = (index: number) => {
+    setActiveIndex(index);
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(cyclePrev, autoRotateInterval);
+  };
+
+  const getPositionClass = (index: number) => {
+    if (index === activeIndex) return "active";
+    const prevIndex = (activeIndex - 1 + total) % total;
+    if (index === prevIndex) return "top";
+    const nextIndex = (activeIndex + 1) % total;
+    if (index === nextIndex) return "bottom";
+    return "hidden";
+  };
+
+  // --- Updated getTextStyles ---
+  const getTextStyles = (pos: string) => {
+    if (isMobile) {
+      // Mobile: horizontal slide with same timing
+      if (pos === "active")
+        return "opacity-100 translate-x-0 pointer-events-auto z-20";
+      if (pos === "top") return "opacity-0 -translate-x-8 z-10"; // previous → from left
+      if (pos === "bottom") return "opacity-0 translate-x-8 z-10"; // next → from right
+      return "opacity-0 translate-x-12 z-0";
+    }
+
+    // Desktop: original vertical slide
+    if (pos === "active")
+      return "opacity-100 translate-y-0 pointer-events-auto z-20";
+    if (pos === "top") return "opacity-0 -translate-y-8 z-10";
+    if (pos === "bottom") return "opacity-0 translate-y-8 z-10";
+    return "opacity-0 translate-y-12 z-0";
+  };
+
+  // --- PATH CONFIGURATION ---
+  const DESKTOP_PATH = "M 1 5 Q 250 250 1 450"; // vertical bulge (desktop)
+  const MOBILE_PATH = "M 0 20 Q 150 140 300 20"; // downward U (smile) — active at bottom
+
+  const CURVE_PATH = isMobile ? MOBILE_PATH : DESKTOP_PATH;
+  const VIEWBOX = isMobile ? "0 0 300 160" : "0 0 300 500";
 
   return (
-    <section id="feedbacks" className="py-16 overflow-hidden">
-      <div className="container mx-auto px-4 mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-          What Our Clients Say
-        </h2>
-        <p className="text-center text-muted-foreground max-w-2xl mx-auto">
-          Real feedback from satisfied clients who trusted us with their
-          academic and professional projects.
-        </p>
-      </div>
+    <section className="relative py-12 md:py-24 px-4 md:px-20 bg-gradient-to-br from-background via-muted/20 to-background overflow-hidden">
+      <div
+        id="feedbacks"
+        className="absolute inset-0 bg-gradient-to-tr from-secondary/10 via-transparent to-primary/10 pointer-events-none"
+      />
 
-      <div className="space-y-6">
-        {[0, 1, 2].map((rowIndex) => (
-          <div key={rowIndex} className="relative">
-            <div
-              ref={(el) => {
-                if (el) rowRefs.current.set(rowIndex, el);
-              }}
-              className="flex space-x-6 overflow-x-auto scrollbar-hide"
-              onMouseEnter={() => handleMouseEnter(rowIndex)}
-              onMouseLeave={() => handleMouseLeave(rowIndex)}
-              onTouchStart={() => handleTouchStart(rowIndex)}
-              onTouchEnd={() => handleTouchEnd(rowIndex)}
+      <div className="container mx-auto relative">
+        <div className="text-center mb-10 lg:mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            What Our Clients Say
+          </h2>
+          <p className="text-muted-foreground mt-3 max-w-xl mx-auto text-base md:text-lg">
+            Real experiences shared by students and professionals we’ve helped.
+          </p>
+        </div>
+
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-24 items-center px-0 md:px-36">
+          {/* --- AVATAR SECTION --- */}
+          <div
+            className={`relative w-full max-w-[300px] mx-auto my-10 flex-shrink-0 ${
+              isMobile ? "h-[160px]" : "h-[500px]"
+            }`}
+          >
+            <svg
+              className="absolute left-0 top-0 w-full h-full pointer-events-none z-0"
+              viewBox={VIEWBOX}
+              fill="none"
+              preserveAspectRatio="xMidYMid meet"
             >
-              {[...Array(2)].map((_, loopIndex) => (
-                <React.Fragment key={`loop-${loopIndex}`}>
-                  {getRowFeedbacks(rowIndex).map((feedback, index) => (
-                    <FeedbackCard
-                      key={`${feedback.id}-${index}-row-${rowIndex}-loop-${loopIndex}`}
-                      feedback={feedback}
-                      onClick={() => onCardClick(feedback)}
-                    />
-                  ))}
-                </React.Fragment>
-              ))}
-            </div>
+              <defs>
+                <linearGradient
+                  id="curveGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="hsl(var(--muted-foreground) / 0.4)"
+                  />
+                  <stop offset="100%" stopColor="hsl(var(--border) / 0.4)" />
+                </linearGradient>
+              </defs>
+              <path
+                d={CURVE_PATH}
+                stroke="url(#curveGradient)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
 
-            {/* Gradient overlays for smooth edges */}
-            <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-background to-transparent pointer-events-none z-10" />
-            <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-background to-transparent pointer-events-none z-10" />
+            <div className="relative w-full h-full">
+              {feedbacks.map((fb, index) => {
+                const pos = getPositionClass(index);
+
+                const offsetDistance =
+                  pos === "active"
+                    ? "50%"
+                    : pos === "top"
+                    ? "0%"
+                    : pos === "bottom"
+                    ? "100%"
+                    : "0%";
+
+                const transitionClass =
+                  pos === "hidden"
+                    ? ""
+                    : "transition-all duration-[850ms] ease-[cubic-bezier(0.25,0.8,0.25,1)]";
+
+                return (
+                  <div
+                    key={fb.id}
+                    onClick={() => handleManualClick(index)}
+                    className={`absolute left-0 top-0 cursor-pointer ${transitionClass} lg:mt-[30px]`}
+                    style={{
+                      offsetPath: `path("${CURVE_PATH}")`,
+                      offsetRotate: "0deg",
+                      offsetDistance,
+                      opacity:
+                        pos === "active" ? 1 : pos === "hidden" ? 0 : 0.4,
+                      transform:
+                        pos === "active"
+                          ? "translateY(-50%) scale(1)"
+                          : "translateY(-50%) scale(0.88)",
+                      zIndex: pos === "active" ? 30 : 10,
+                      filter: pos === "active" ? "none" : "grayscale(100%)",
+                      pointerEvents: pos === "hidden" ? "none" : "auto",
+                    }}
+                  >
+                    <div
+                      className={`relative rounded-full overflow-hidden border-2 ${
+                        pos === "active"
+                          ? "w-20 h-20 border-primary/70 shadow-floating bg-gradient-primary glow-animate-blue"
+                          : "w-16 h-16 border-border bg-card shadow-soft"
+                      }`}
+                    >
+                      <div
+                        className="w-full h-full flex items-center justify-center text-white font-bold text-xl"
+                        style={{
+                          background:
+                            pos === "active"
+                              ? "var(--gradient-primary)"
+                              : "hsl(var(--muted-foreground) / 0.25)",
+                        }}
+                      >
+                        {getInitials(fb.name)}
+                      </div>
+                    </div>
+
+                    {/* --- POP-OUT NAME CARD (now ABOVE avatar on mobile) --- */}
+                    {/* --- POP-OUT NAME CARD --- */}
+                    {/* --- POP-OUT NAME CARD --- */}
+                    <div
+                      className={`absolute transition-all duration-500
+                      lg:left-24 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-0 lg:w-[280px] lg:text-left
+                      left-1/2 -translate-x-1/2 top-25 w-[200px] text-center 
+                      ${
+                        pos === "active"
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 lg:-translate-x-4 pointer-events-none"
+                      }
+                    `}
+                    >
+                      <div className="border-none bg-transparent lg:bg-transparent sm:backdrop-blur-none lg:backdrop-blur-none p-2 lg:p-0 rounded-xl lg:rounded-none border lg:border-none lg:shadow-none">
+                        <p className="font-semibold text-foreground text-lg whitespace-nowrap lg:whitespace-normal truncate">
+                          {fb.name}
+                        </p>
+                        <div className="flex items-center justify-center lg:justify-start gap-1 mt-1">
+                          {/* Stars */}
+                          {[...Array(5)].map((_, i) => {
+                            const filled = i + 1 <= Math.round(fb.rating);
+                            return (
+                              <Star
+                                key={i}
+                                className={`w-3 h-3 ${
+                                  filled
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "fill-none text-muted-foreground"
+                                }`}
+                              />
+                            );
+                          })}
+                          {/* Rating number */}
+                          <span className="text-xs font-bold text-muted-foreground ml-1">
+                            {fb.rating.toFixed(1)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        ))}
+
+          {/* --- TEXT SECTION --- */}
+          <div className="relative w-full lg:pl-6 text-center lg:text-left">
+            <span className="hidden lg:block absolute  -left-4 text-8xl font-serif text-primary/20 select-none">
+              “
+            </span>
+            <span className="lg:hidden block text-6xl font-serif text-primary/20 select-none">
+              “
+            </span>
+
+            <div className="relative h-[240px] sm:h-[260px]">
+              {feedbacks.map((fb, index) => {
+                const pos = getPositionClass(index);
+                const textClass = getTextStyles(pos);
+
+                // Split feedback into first char and rest
+                const firstChar = fb.feedback.charAt(0);
+                const rest = fb.feedback.substring(1);
+
+                return (
+                  <div
+                    key={fb.id}
+                    className={`
+            absolute inset-0 
+            flex flex-col justify-start lg:justify-center
+            transition-all duration-[800ms] ease-[cubic-bezier(0.25,0.8,0.25,1)]
+            ${textClass}
+          `}
+                  >
+                    <p className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-serif text-foreground leading-relaxed italic px-2 md:px-0 relative">
+                      {/* First letter — styled on all screens */}
+                      <span
+                        className={`
+                font-bold text-primary 
+                ${
+                  isMobile
+                    ? "text-4xl -ml-1 mr-0.5 align-baseline "
+                    : "float-left text-6xl leading-[0.8] mr-2 "
+                }
+              `}
+                      >
+                        {firstChar}
+                      </span>
+                      {/* Rest of the text */}
+                      <span>{rest}</span>
+                    </p>
+
+                    {/* Name divider — desktop only */}
+                    <div className="hidden lg:flex mt-6 items-center gap-2 text-muted-foreground">
+                      <div className="h-[1px] w-8 bg-border"></div>
+                      <span className="text-sm font-bold tracking-widest uppercase">
+                        {fb.name}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
