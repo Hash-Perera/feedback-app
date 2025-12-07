@@ -4,7 +4,7 @@ interface ProjectMedia {
   alt?: string;
 }
 
-interface ProjectItem {
+export interface ProjectItem {
   id: string;
   title: string;
   summary: string;
@@ -12,4 +12,25 @@ interface ProjectItem {
   tags: string[];
   thumbnail: string;
   media: ProjectMedia[];
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  summary: string;
+  description: string;
+  tags: string[];
+  thumbnail: string;
+  media: ProjectMedia[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateProjectData {
+  title: string;
+  summary: string;
+  description: string;
+  tags?: string[];
+  thumbnail?: string;
+  media?: ProjectMedia[];
 }
