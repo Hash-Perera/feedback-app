@@ -154,7 +154,7 @@ export default function Home() {
       <Footer />
 
       {/* WhatsApp Floating Button */}
-      <WhatsAppButton phoneNumber="94763148962" isDarkMode={isDarkMode} />
+      <WhatsAppButton phoneNumber="94775538374" isDarkMode={isDarkMode} />
 
       {/* Modals */}
       <FeedbackDetailsModal
