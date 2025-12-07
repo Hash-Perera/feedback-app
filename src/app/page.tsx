@@ -17,6 +17,7 @@ import WhyChooseUs from "@/components/WhyChooseUs";
 import HowItWorks from "@/components/HowItWorks";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import LogoLoopContainer from "@/components/LogoLoopContainer";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -85,7 +86,21 @@ export default function Home() {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const params = useSearchParams();
+  const scrollTo = params.get("scrollTo");
   const { toast } = useToast();
+
+  //! Scroll to section if scrollTo param exists
+  useEffect(() => {
+    if (scrollTo) {
+      const el = document.getElementById(scrollTo);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 300); // small delay to allow page rendering
+      }
+    }
+  }, [scrollTo]);
 
   //! Get Feedbacks
   useEffect(() => {
@@ -154,7 +169,7 @@ export default function Home() {
       <Footer />
 
       {/* WhatsApp Floating Button */}
-      <WhatsAppButton phoneNumber="94763148962" isDarkMode={isDarkMode} />
+      <WhatsAppButton phoneNumber="94775538374" isDarkMode={isDarkMode} />
 
       {/* Modals */}
       <FeedbackDetailsModal

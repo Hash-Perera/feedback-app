@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import AddProjectForm from "@/components/AddProjectForm";
-import AuthDialog from "@/components/LoginModel";
 import { useAuthStore } from "@/store/auth-store";
 import AdminAccessPage from "@/components/LoginModel";
 
@@ -12,7 +11,6 @@ const AddProjectPage = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      // open dialog if not authenticated
       setShowAuth(true);
     }
   }, [isAuthenticated]);
