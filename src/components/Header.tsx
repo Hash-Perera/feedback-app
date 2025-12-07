@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface HeaderProps {
   isDarkMode: boolean;
@@ -14,13 +15,40 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  //! Ensure code runs only on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
 
   const handleScrollLink = (id: string) => {
-    if (pathname === "/") {
-      const section = document.getElementById(id);
-      if (section) section.scrollIntoView({ behavior: "smooth" });
+    if (pathname !== "/") {
+      router.push(`/?scrollTo=${id}`);
+      setIsMenuOpen(false);
+      return;
     }
+
+    const section = document.getElementById(id);
+    if (section) section.scrollIntoView({ behavior: "smooth" });
     setIsMenuOpen(false);
+  };
+
+  const handleLogoClick = () => {
+    setIsMenuOpen(false);
+
+    if (pathname !== "/") {
+      router.push("/?scrollTo=hero");
+      return;
+    }
+
+    const hero = document.getElementById("hero");
+    if (hero) {
+      hero.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const navItems = [
@@ -49,11 +77,18 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleDarkMode }) => {
     >
       <div className="flex items-center justify-between px-6 py-3 md:px-8">
         {/* Brand */}
-        <Link href="/" onClick={() => setIsMenuOpen(false)}>
+        {/* <Link href="/" onClick={() => setIsMenuOpen(false)}>
           <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent select-none cursor-pointer">
             AssignmentBuddy
           </h1>
-        </Link>
+        </Link> */}
+
+        <h1
+          onClick={handleLogoClick}
+          className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent select-none cursor-pointer"
+        >
+          AssignmentBuddy
+        </h1>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
