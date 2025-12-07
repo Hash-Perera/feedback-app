@@ -21,6 +21,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
+import { projectService } from "@/services/projectService";
+import { CreateProjectData } from "@/interfaces/project";
 
 const projectSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(100),
@@ -57,6 +59,7 @@ const AddProjectForm: React.FC = () => {
 
   const onSubmit = async (data: ProjectFormData) => {
     setIsSubmitting(true);
+
     try {
       const payload = {
         ...data,
@@ -78,14 +81,27 @@ const AddProjectForm: React.FC = () => {
             })) || [],
       };
 
-      console.log("Project payload:", payload);
+      const result = await projectService.addProject(
+        payload as CreateProjectData
+      );
+      if (result.success) {
+        toast({
+          title: "✅ Project Added",
+          description: "Your project has been added successfully.",
+        });
 
-      toast({
-        title: "✅ Project Added!",
-        description: "Your project has been successfully added.",
-      });
+        // clear form
+        form.reset();
 
-      setTimeout(() => router.push("/projects"), 1200);
+        router.push("/projects/add");
+      } else {
+        toast({
+          title: "❌ Error",
+          description: result.message || "Failed to add project",
+          variant: "destructive",
+        });
+        throw new Error(result.message || "Failed to add project");
+      }
     } catch (error) {
       console.error(error);
       toast({

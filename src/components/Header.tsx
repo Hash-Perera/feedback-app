@@ -77,11 +77,6 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleDarkMode }) => {
     >
       <div className="flex items-center justify-between px-6 py-3 md:px-8">
         {/* Brand */}
-        {/* <Link href="/" onClick={() => setIsMenuOpen(false)}>
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent select-none cursor-pointer">
-            AssignmentBuddy
-          </h1>
-        </Link> */}
 
         <h1
           onClick={handleLogoClick}
@@ -164,7 +159,7 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleDarkMode }) => {
       </div>
 
       {/* Mobile Menu */}
-      <div
+      {/* <div
         className={`absolute top-[72px] left-1/2 -translate-x-1/2 w-[90%] max-w-sm rounded-3xl border backdrop-blur-2xl backdrop-saturate-150 transition-all duration-300 ease-out transform origin-top ${
           isMenuOpen
             ? "opacity-100 scale-100 visible"
@@ -204,6 +199,62 @@ const Header: React.FC<HeaderProps> = ({ isDarkMode, onToggleDarkMode }) => {
                     ? "text-gray-200 hover:text-white"
                     : "text-gray-700 hover:text-gray-900"
                 }`}
+              >
+                {item.name}
+              </Link>
+            )
+          )}
+        </div>
+      </div> */}
+
+      {/* Mobile Menu */}
+      <div
+        className={`
+    absolute top-[72px] left-1/2 -translate-x-1/2 w-[90%] max-w-sm
+    rounded-3xl border transition-all duration-300 ease-out transform origin-top
+    ${
+      isMenuOpen
+        ? "opacity-100 scale-100 visible"
+        : "opacity-0 scale-95 invisible"
+    }
+    ${
+      isDarkMode
+        ? "bg-[#0f0f14]/95 border-white/10 text-white"
+        : "bg-white/90 border-gray-200 text-gray-800"
+    }
+    shadow-xl
+  `}
+      >
+        <div className="flex flex-col items-center py-6 space-y-6">
+          {navItems.map((item) =>
+            item.href.startsWith("#") ? (
+              <button
+                key={item.name}
+                onClick={() => handleScrollLink(item.id!)}
+                className={`
+            text-lg font-medium cursor-pointer transition-colors
+            ${
+              isDarkMode
+                ? "text-gray-200 hover:text-white"
+                : "text-gray-700 hover:text-black"
+            }
+          `}
+              >
+                {item.name}
+              </button>
+            ) : (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`
+            text-lg font-medium cursor-pointer transition-colors
+            ${
+              isDarkMode
+                ? "text-gray-200 hover:text-white"
+                : "text-gray-700 hover:text-black"
+            }
+          `}
               >
                 {item.name}
               </Link>
