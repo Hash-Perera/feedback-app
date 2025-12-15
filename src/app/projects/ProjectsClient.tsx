@@ -149,7 +149,7 @@ const ProjectsClient: React.FC = () => {
                           src={p.thumbnail}
                           alt={p.title}
                           loading="lazy"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain bg-gray-100"
                         />
                       )}
                     </div>
@@ -206,12 +206,12 @@ const ProjectsClient: React.FC = () => {
                                   alt={
                                     m.alt || `${active.title} media ${idx + 1}`
                                   }
-                                  className="w-full h-full object-cover"
+                                  className="w-full h-full object-contain bg-gray-100"
                                 />
                               ) : (
                                 <video
                                   controls
-                                  className="w-full h-full rounded-xl"
+                                  className="w-full h-full rounded-xl object-cover"
                                 >
                                   <source src={m.src} />
                                 </video>
