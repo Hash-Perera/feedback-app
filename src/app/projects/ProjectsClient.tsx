@@ -82,6 +82,9 @@ const ProjectsClient: React.FC = () => {
     else document.documentElement.classList.remove("dark");
   };
 
+  const isVideo = (url: string) =>
+    url.endsWith(".mp4") || url.endsWith(".webm") || url.includes("/video/");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background relative">
       <Header isDarkMode={isDarkMode} onToggleDarkMode={handleToggleDarkMode} />
@@ -132,12 +135,23 @@ const ProjectsClient: React.FC = () => {
 
                   <CardContent>
                     <div className="aspect-video rounded-md overflow-hidden bg-gray-100">
-                      <img
-                        src={p.thumbnail}
-                        alt={p.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                      />
+                      {isVideo(p.thumbnail) ? (
+                        <video
+                          src={p.thumbnail}
+                          className="w-full h-full object-cover"
+                          muted
+                          autoPlay
+                          loop
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          src={p.thumbnail}
+                          alt={p.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
