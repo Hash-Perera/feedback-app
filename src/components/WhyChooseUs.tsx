@@ -12,8 +12,8 @@ const features = [
     icon: GraduationCap,
     title: "Expert Writers",
     description:
-      "PhD-qualified professionals with extensive experience in academic writing across all disciplines.",
-    stat: "50+",
+      "Qualified professionals with extensive experience in academic writing across all disciplines.",
+    stat: "10+",
     statLabel: "BSc/MSc Experts",
   },
   {

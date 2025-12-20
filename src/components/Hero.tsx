@@ -175,8 +175,7 @@ const Hero: React.FC = () => {
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
           Empowering your studies with expert academic writing, research help,
-          Web & Mobile app development, and IT, Business & Engineering
-          assignments.
+          Web & Mobile app development, AI/ML applications and IT assignments.
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
