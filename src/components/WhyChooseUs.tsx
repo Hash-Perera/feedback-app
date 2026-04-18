@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  GraduationCap,
+  Code2,
   Clock,
   Shield,
   HeadphonesIcon,
@@ -9,12 +9,12 @@ import {
 
 const features = [
   {
-    icon: GraduationCap,
-    title: "Expert Writers",
+    icon: Code2,
+    title: "Expert Developers",
     description:
-      "Qualified professionals with extensive experience in academic writing across all disciplines.",
+      "Qualified professionals with hands-on experience in web and mobile development across modern stacks.",
     stat: "10+",
-    statLabel: "BSc/MSc Experts",
+    statLabel: "Dev Experts",
   },
   {
     icon: Clock,

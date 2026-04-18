@@ -31,6 +31,72 @@ import {
 
 import { Project } from "@/interfaces/project";
 
+interface ProjectMediaFrameProps {
+  projectType: Project["type"];
+  src: string;
+  alt: string;
+  isVideoMedia: boolean;
+  mode: "card" | "modal";
+}
+
+function ProjectMediaFrame({
+  projectType,
+  src,
+  alt,
+  isVideoMedia,
+  mode,
+}: ProjectMediaFrameProps) {
+  const media = isVideoMedia ? (
+    <video
+      src={src}
+      className="w-full h-full object-cover"
+      muted={mode === "card"}
+      autoPlay={mode === "card"}
+      loop={mode === "card"}
+      playsInline
+      controls={mode === "modal"}
+    />
+  ) : (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      className="w-full h-full object-contain"
+    />
+  );
+
+  if (projectType === "Mobile") {
+    return (
+      <div className={mode === "card" ? "w-full" : "flex justify-center"}>
+        <div
+          className={`relative mx-auto rounded-[2.2rem] border-[5px] border-neutral-900 bg-neutral-900 shadow-lg overflow-hidden ${
+            mode === "card"
+              ? "max-w-[220px] aspect-[828/1792]"
+              : "w-[250px] sm:w-[300px] aspect-[828/1792]"
+          }`}
+        >
+          <div className="absolute top-[6px] left-1/2 -translate-x-1/2 h-6 w-28 rounded-b-[1rem] bg-neutral-900 z-20" />
+          <div className="absolute inset-[6px] rounded-[1.7rem] bg-neutral-100 p-2 dark:bg-neutral-900">
+            <div className="h-full w-full rounded-[1.2rem] overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+              {media}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (mode === "card") {
+    return <div className="aspect-video rounded-md overflow-hidden bg-gray-100">{media}</div>;
+  }
+
+  return (
+    <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 dark:bg-white/10 w-full">
+      {media}
+    </div>
+  );
+}
+
 const ProjectsClient: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,7 +165,7 @@ const ProjectsClient: React.FC = () => {
             Projects Showcase
           </h1>
           <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
-            Explore our work — from data analytics to full-stack solutions.
+            Explore our work - from data analytics to full-stack solutions.
           </p>
         </header>
 
@@ -134,25 +200,13 @@ const ProjectsClient: React.FC = () => {
                   </CardHeader>
 
                   <CardContent>
-                    <div className="aspect-video rounded-md overflow-hidden bg-gray-100">
-                      {isVideo(p.thumbnail) ? (
-                        <video
-                          src={p.thumbnail}
-                          className="w-full h-full object-cover"
-                          muted
-                          autoPlay
-                          loop
-                          playsInline
-                        />
-                      ) : (
-                        <img
-                          src={p.thumbnail}
-                          alt={p.title}
-                          loading="lazy"
-                          className="w-full h-full object-cover"
-                        />
-                      )}
-                    </div>
+                    <ProjectMediaFrame
+                      projectType={p.type}
+                      src={p.thumbnail}
+                      alt={p.title}
+                      isVideoMedia={isVideo(p.thumbnail)}
+                      mode="card"
+                    />
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       {p.tags.map((tag) => (
@@ -199,24 +253,13 @@ const ProjectsClient: React.FC = () => {
                       <CarouselContent>
                         {active.media.map((m, idx) => (
                           <CarouselItem key={idx}>
-                            <div className="aspect-video rounded-xl overflow-hidden bg-gray-100 dark:bg-white/10 w-full">
-                              {m.type === "image" ? (
-                                <img
-                                  src={m.src}
-                                  alt={
-                                    m.alt || `${active.title} media ${idx + 1}`
-                                  }
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <video
-                                  controls
-                                  className="w-full h-full rounded-xl"
-                                >
-                                  <source src={m.src} />
-                                </video>
-                              )}
-                            </div>
+                            <ProjectMediaFrame
+                              projectType={active.type}
+                              src={m.src}
+                              alt={m.alt || `${active.title} media ${idx + 1}`}
+                              isVideoMedia={m.type === "video"}
+                              mode="modal"
+                            />
                           </CarouselItem>
                         ))}
                       </CarouselContent>
