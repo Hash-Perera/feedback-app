@@ -2,6 +2,7 @@ import { Schema, model, models } from "mongoose";
 
 const ProjectSchema = new Schema(
   {
+    type: { type: String, enum: ["Mobile", "Web"], required: true },
     title: { type: String, required: true, trim: true, maxlength: 200 },
     summary: { type: String, required: true, trim: true, maxlength: 500 },
     description: { type: String, required: true, trim: true, maxlength: 5000 },

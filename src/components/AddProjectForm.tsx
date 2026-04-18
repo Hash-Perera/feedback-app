@@ -21,6 +21,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 
@@ -43,6 +50,9 @@ type LocalMediaItem = {
    Zod schema (form-only)
 ======================= */
 const projectSchema = z.object({
+  type: z.enum(["Mobile", "Web"], {
+    message: "Please select a project type",
+  }),
   title: z.string().min(3, "Title must be at least 3 characters"),
   summary: z.string().min(10, "Summary must be at least 10 characters"),
   description: z.string().min(20, "Description must be at least 20 characters"),
@@ -64,6 +74,7 @@ export default function AddProjectForm() {
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
+      type: "Web",
       title: "",
       summary: "",
       description: "",
@@ -164,6 +175,7 @@ export default function AddProjectForm() {
       }
 
       const payload: CreateProjectData = {
+        type: data.type,
         title: data.title,
         summary: data.summary,
         description: data.description,
@@ -235,6 +247,32 @@ export default function AddProjectForm() {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Type */}
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">Project Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="rounded-xl bg-white/70 dark:bg-white/5">
+                        <SelectValue placeholder="Select project type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Mobile">Mobile</SelectItem>
+                      <SelectItem value="Web">Web</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

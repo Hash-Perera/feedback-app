@@ -10,12 +10,23 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { title, summary, description, tags, thumbnail, media } = body || {};
-    if (!title || !summary || !description) {
+    const { type, title, summary, description, tags, thumbnail, media } =
+      body || {};
+    if (!type || !title || !summary || !description) {
       return NextResponse.json(
         {
           success: false,
-          message: "title, summary, and description are required.",
+          message: "type, title, summary, and description are required.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!["Mobile", "Web"].includes(type)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "type must be either Mobile or Web.",
         },
         { status: 400 }
       );
@@ -23,6 +34,7 @@ export async function POST(req: Request) {
 
     await dbConnect();
     const doc = await Project.create({
+      type,
       title,
       summary,
       description,

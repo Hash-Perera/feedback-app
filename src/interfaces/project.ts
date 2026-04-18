@@ -4,8 +4,11 @@ interface ProjectMedia {
   alt?: string;
 }
 
+export type ProjectType = "Mobile" | "Web";
+
 export interface ProjectItem {
   id: string;
+  type: ProjectType;
   title: string;
   summary: string;
   description: string;
@@ -16,6 +19,7 @@ export interface ProjectItem {
 
 export interface Project {
   id: string;
+  type: ProjectType;
   title: string;
   summary: string;
   description: string;
@@ -27,6 +31,7 @@ export interface Project {
 }
 
 export interface CreateProjectData {
+  type: ProjectType;
   title: string;
   summary: string;
   description: string;
