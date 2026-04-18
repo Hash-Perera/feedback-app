@@ -128,9 +128,9 @@ import { Send, UserCheck, RefreshCw, Download } from "lucide-react";
 const steps = [
   {
     icon: Send,
-    title: "Submit Requirements",
+    title: "Connect on WhatsApp",
     description:
-      "Share your project details, deadlines, and specific requirements through our simple submission form.",
+      "Send us your project details and requirements on WhatsApp to get started quickly.",
     step: "01",
     color: "from-primary to-blue-500",
   },
